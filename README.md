@@ -7,10 +7,14 @@ Unfortunately, there is no file in the pango-designation repo that mentions the 
 ## Possible approaches
 
 - Find first mention in `lineages.csv` file, need to step through history commit by commit and see when a lineage was first mentioned
-- First mention in `lineage_notes.txt`
-- First mention in commit message
+- First mention in `lineage_notes.txt`: use lineages that are present in `lineages.csv` as basis for search
+- First mention in commit message: use lineages in `lineages.csv` as basis for search
 
-Try all of the above and use the earliest date.
+Try all of the above and use the earliest date. Expect that designation will be earliest.
+
+## Issues
+
+`lineages.csv` only started in February 2021, before need another source of truth
 
 ## Output
 
