@@ -47,7 +47,10 @@ def main(
     first_mention: DefaultDict[str, dt.datetime] = defaultdict(None)
     df = pd.read_csv("data/lineage_designation_date.csv", index_col=0)
     for index, row in df.iterrows():
-        first_mention[index] = parser.parse(row["designation_date"])
+        try:
+            first_mention[index] = parser.parse(row["designation_date"])
+        except:
+            first_mention[index] = None
     # SINCE = parser.parse(df.designation_date.max()) - dt.timedelta(days=5)
     # TO = SINCE + dt.timedelta(days=50)
     for commit in tqdm(repo.traverse_commits(), total=total_commits):
