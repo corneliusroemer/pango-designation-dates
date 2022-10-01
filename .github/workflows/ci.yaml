@@ -1,0 +1,31 @@
+name: Add dates of newest designations
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+  schedule:
+    - cron: "25 * * * *"
+
+jobs:
+  add-dates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # TODO: Only run if there's been a commit to pango-designation
+      # Use simple text file to store date of most recent commit
+      - name: Checkout pango-designation
+        uses: actions/checkout@v3
+        with:
+          repository: cov-lineages/pango-designation
+          path: "./pango-designation"
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "pip" # caching pip dependencies
+      - run: pip install -r requirements.txt
+      - run: python get_designation_date.py --pango-path ./pango-designation
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update designation dates
+          commit_options: "--no-verify"
