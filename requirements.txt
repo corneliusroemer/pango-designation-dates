@@ -2,3 +2,4 @@ pandas
 tqdm
 pydriller
 dateutil
+typer
