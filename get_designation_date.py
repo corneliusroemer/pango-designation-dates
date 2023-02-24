@@ -28,7 +28,7 @@ def main(
         previous_commit_datetime = parser.parse(f.read())
 
     repo = Repository(
-        pango_path, filepath="lineages.csv" #, since=previous_commit_datetime
+        pango_path, filepath="lineages.csv", since=previous_commit_datetime
     )
 
     commits = list(repo.traverse_commits())
@@ -37,13 +37,13 @@ def main(
     new_commits = [
         commit
         for commit in commits
-        # if commit.author_date > previous_commit_datetime
+        if commit.author_date > previous_commit_datetime
     ]
     if len(new_commits) > 0:
-        print("New commits found ... ", len(new_commits))
+        print("New commits found")
     else:
         print("No new commits found")
-    #     return 1
+        return 1
 
     first_mention: DefaultDict[str, dt.datetime] = defaultdict(None)
     df = pd.read_csv("data/lineage_designation_date.csv", index_col=0)
