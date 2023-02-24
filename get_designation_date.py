@@ -28,21 +28,22 @@ def main(
         previous_commit_datetime = parser.parse(f.read())
 
     repo = Repository(
-        pango_path, filepath="lineages.csv", since=previous_commit_datetime
+        pango_path, filepath="lineages.csv" #, since=previous_commit_datetime
     )
 
-    total_commits = len(list(repo.traverse_commits()))
+    commits = list(repo.traverse_commits())
+    total_commits = len(commits)
 
     new_commits = [
         commit
-        for commit in repo.traverse_commits()
-        if commit.author_date > previous_commit_datetime
+        for commit in commits
+        # if commit.author_date > previous_commit_datetime
     ]
-    if len(new_commits) > 0:
-        print("New commits found")
-    else:
-        print("No new commits found")
-        return 1
+    # if len(new_commits) > 0:
+    #     print("New commits found")
+    # else:
+    #     print("No new commits found")
+    #     return 1
 
     first_mention: DefaultDict[str, dt.datetime] = defaultdict(None)
     df = pd.read_csv("data/lineage_designation_date.csv", index_col=0)
@@ -53,7 +54,7 @@ def main(
             first_mention[index] = None
     # SINCE = parser.parse(df.designation_date.max()) - dt.timedelta(days=5)
     # TO = SINCE + dt.timedelta(days=50)
-    for commit in tqdm(repo.traverse_commits(), total=total_commits):
+    for commit in tqdm(commits, total=total_commits):
         for file in commit.modified_files:
             if file.filename == "lineages.csv":
                 code = file.source_code
@@ -68,12 +69,12 @@ def main(
     df.to_csv("data/lineage_designation_date.csv", index_label="lineage")
 
     print("Updating timestamp")
-    most_recent_commit = list(repo.traverse_commits())[-1]
+    most_recent_commit = commits[-1]
     with open(TIMESTAMP_FILE, "w") as f:
         f.write(most_recent_commit.author_date.isoformat())
 
     # Print dates and hashes of recent commits
-    for commit in repo.traverse_commits():
+    for commit in commits:
         print(commit.author_date, commit.hash)
 
 
