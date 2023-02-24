@@ -39,10 +39,10 @@ def main(
         for commit in commits
         # if commit.author_date > previous_commit_datetime
     ]
-    # if len(new_commits) > 0:
-    #     print("New commits found")
-    # else:
-    #     print("No new commits found")
+    if len(new_commits) > 0:
+        print("New commits found ... ", len(new_commits))
+    else:
+        print("No new commits found")
     #     return 1
 
     first_mention: DefaultDict[str, dt.datetime] = defaultdict(None)
@@ -61,7 +61,7 @@ def main(
                 df = pd.read_csv(io.StringIO(code))
                 for lineage in df.lineage.unique():
                     if lineage not in first_mention:
-                        first_mention[lineage] = commit.committer_date.date()
+                        first_mention[lineage] = commit.committer_date.isoformat()
 
     df = pd.DataFrame.from_dict(
         first_mention, orient="index", columns=["designation_date"]
