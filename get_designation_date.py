@@ -24,14 +24,23 @@ def main(
         print("No previous commit timestamp found. Exiting.")
         exit()
 
+    print("Reading timestamp")
     with open(TIMESTAMP_FILE, "r") as f:
         previous_commit_datetime = parser.parse(f.read())
 
+    print("Retrieving Repo ... ", end="")
     repo = Repository(
         pango_path, filepath="lineages.csv", since=previous_commit_datetime
     )
+    print("retrieved")
 
-    commits = list(repo.traverse_commits())
+    print("Reading commits ...")
+    commits = []
+    for commit in repo.traverse_commits():
+        print(" -", "Date:", commit.author_date.isoformat(), "Hash:", commit.hash, "Message:", commit.msg)
+        commits.append(commit)
+    print("Commits all read")
+    # commits = list(repo.traverse_commits())
     total_commits = len(commits)
 
     new_commits = [
