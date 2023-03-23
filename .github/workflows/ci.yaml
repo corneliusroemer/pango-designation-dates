@@ -19,7 +19,7 @@ jobs:
         with:
           repository: cov-lineages/pango-designation
           path: "./pango-designation"
-          fetch-depth: 29
+          fetch-depth: 28
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
