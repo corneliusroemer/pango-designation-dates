@@ -68,9 +68,13 @@ def main(
             if file.filename == "lineages.csv":
                 code = file.source_code
                 df = pd.read_csv(io.StringIO(code))
-                for lineage in df.lineage.unique():
-                    if lineage not in first_mention:
-                        first_mention[lineage] = commit.committer_date.isoformat()
+                try:
+                    for lineage in df.lineage.unique():
+                        if lineage not in first_mention:
+                            first_mention[lineage] = commit.committer_date.isoformat()
+                except:
+                    print("Error parsing", commit.hash)
+                    continue
 
     df = pd.DataFrame.from_dict(
         first_mention, orient="index", columns=["designation_date"]
