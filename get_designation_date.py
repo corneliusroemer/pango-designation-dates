@@ -1,3 +1,4 @@
+import csv
 import datetime as dt
 import io
 import os
@@ -5,10 +6,10 @@ from collections import defaultdict
 from typing import DefaultDict
 
 import pandas as pd
+import typer
 from dateutil import parser
 from pydriller import Repository
 from tqdm import tqdm
-import typer
 
 
 def main(
@@ -61,15 +62,24 @@ def main(
                 try:
                     for lineage in df.lineage.unique():
                         if lineage not in first_mention:
-                            first_mention[lineage] = commit.committer_date.date()
+                            first_mention[
+                                lineage
+                            ] = commit.committer_date.date()
                 except:
                     print("Error parsing", commit.hash)
                     continue
 
-    df = pd.DataFrame.from_dict(
-        first_mention, orient="index", columns=["designation_date"]
-    )
-    df.to_csv("data/lineage_designation_date.csv", index_label="lineage")
+    with open("data/lineage_designation_date.csv", mode="w") as file:
+        # Create a CSV writer object
+        writer = csv.writer(file)
+
+        # Write the header row
+        writer.writerow(["lineage", "designation_date"])
+
+        # Write the data rows
+        for key, value in first_mention.items():
+            date_str = "" if value is None else value.strftime("%Y-%m-%d")
+            writer.writerow([key, date_str])
 
     print("Updating timestamp")
     most_recent_commit = list(repo.traverse_commits())[-1]
