@@ -4,6 +4,12 @@ This repository attempts to collect the dates on which each Pango lineage was de
 
 Unfortunately, there is no file in the pango-designation repo that mentions the date a lineage was added so we have to go dig into the git history (please tell me if there's a better way).
 
+## How to run
+
+```bash
+python get_designation_date.py
+```
+
 ## Possible approaches
 
 - Find first mention in `lineages.csv` file, need to step through history commit by commit and see when a lineage was first mentioned

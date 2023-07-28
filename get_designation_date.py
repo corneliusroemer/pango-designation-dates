@@ -58,7 +58,11 @@ def main(
         for file in commit.modified_files:
             if file.filename == "lineages.csv":
                 code = file.source_code
-                df = pd.read_csv(io.StringIO(code))
+                try:
+                    df = pd.read_csv(io.StringIO(code))
+                except:
+                    print("Error reading into pandas df:", commit.hash)
+                    continue
                 try:
                     for lineage in df.lineage.unique():
                         if lineage not in first_mention:
@@ -66,7 +70,7 @@ def main(
                                 lineage
                             ] = commit.committer_date.date()
                 except:
-                    print("Error parsing", commit.hash)
+                    print("Error extracting commit info from:", commit.hash)
                     continue
 
     with open("data/lineage_designation_date.csv", mode="w") as file:
